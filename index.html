@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Security Training | Flashcards</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-dark: #1e293b;
+        --primary-accent: #3b82f6;
+        --success: #10b981;
+        --bg-soft: #f1f5f9;
+        --text-main: #334155;
+        --text-light: #64748b;
+        --white: #ffffff;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background-color: var(--bg-soft);
+        color: var(--text-main);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Header Area */
+      header {
+        width: 100%;
+        background: var(--primary-dark);
+        color: var(--white);
+        padding: 1.5rem 0;
+        text-align: center;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: -0.025em;
+        text-transform: uppercase;
+      }
+
+      header p {
+        margin: 0.5rem 0 0;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .main-container {
+        max-width: 800px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Progress Bar */
+      .progress-wrapper {
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 2rem;
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+      }
+
+      .progress-bar-bg {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: var(--primary-accent);
+        width: 0%;
+        transition: width 0.4s ease;
+      }
+
+      /* Flashcard Logic */
+      .flashcard-stage {
+        perspective: 1500px;
+        width: 100%;
+        max-width: 550px;
+        height: 380px;
+        margin-bottom: 2rem;
+      }
+
+      .flashcard-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+      }
+
+      .flashcard-inner.is-flipped {
+        transform: rotateY(180deg);
+      }
+
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem;
+        border-radius: 20px;
+        background: var(--white);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        text-align: center;
+        box-sizing: border-box;
+      }
+
+      .card-front {
+        border-top: 6px solid var(--primary-accent);
+      }
+
+      .card-front h3 {
+        color: var(--text-light);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+      }
+
+      .card-front p {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin: 0;
+      }
+
+      .card-back {
+        background-color: #f8fafc;
+        transform: rotateY(180deg);
+        border-top: 6px solid var(--success);
+      }
+
+      .card-back p {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: var(--text-main);
+      }
+
+      /* Controls */
+      .action-area {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .nav-btn {
+        background: var(--white);
+        border: 1px solid #e2e8f0;
+        color: var(--text-main);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-btn:hover:not(:disabled) {
+        background: var(--bg-soft);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .primary-btn {
+        background: var(--primary-dark);
+        color: white;
+        border: none;
+      }
+
+      .primary-btn:hover {
+        background: #0f172a !important;
+      }
+
+      .footer-note {
+        margin-top: 3rem;
+        font-size: 0.8rem;
+        color: var(--text-light);
+        text-align: center;
+      }
+
+      @media (max-width: 600px) {
+        .flashcard-stage {
+          height: 320px;
+        }
+        .card-front p {
+          font-size: 1.4rem;
+        }
+        .nav-btn span {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Cyber Security Awareness</h1>
+      <p>Corporate Training Module: Fraud Prevention & Reporting</p>
+      <p>
+        Training flashcard developed by Ravi Shankar Singh, Head SeMT,
+        Uttarakhand
+      </p>
+    </header>
+
+    <div class="main-container">
+      <div class="progress-wrapper">
+        <div class="progress-info">
+          <span id="progressText">Module Progress</span>
+          <span id="percentage">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="flashcard-stage" onclick="flipCard()">
+        <div class="flashcard-inner" id="cardInner">
+          <div class="card-face card-front">
+            <h3>Concept</h3>
+            <p id="frontText">Loading...</p>
+            <div style="margin-top: 2rem; color: #94a3b8; font-size: 0.8rem">
+              <i class="fa-solid fa-rotate"></i> Click to reveal definition
+            </div>
+          </div>
+          <div class="card-face card-back">
+            <h3>Definition / Explanation</h3>
+            <p id="backText">Loading...</p>
+            <div style="margin-top: 2rem; color: #94a3b8; font-size: 0.8rem">
+              <i class="fa-solid fa-rotate"></i> Click to see term
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-area">
+        <button class="nav-btn" id="prevBtn" onclick="prevCard(event)">
+          <i class="fa-solid fa-arrow-left"></i> <span>Previous</span>
+        </button>
+
+        <button
+          class="nav-btn primary-btn"
+          id="nextBtn"
+          onclick="nextCard(event)"
+        >
+          <span>Next Concept</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <div class="footer-note">
+        Confidential Training Material &copy; 2024. Always report suspicious
+        activity immediately.
+      </div>
+    </div>
+
+    <script>
+      const flashcards = [
+        {
+          front: "Vishing",
+          back: "Voice Phishing: Using phone calls and social engineering to manipulate victims into revealing sensitive info or performing actions.",
+        },
+        {
+          front: "Smishing",
+          back: "SMS Phishing: Fraudulent messages sent via text/messaging apps (WhatsApp) containing malicious links or urgent instructions.",
+        },
+        {
+          front: "Phishing",
+          back: "Sending fraudulent emails/links that appear to come from a reputable source to steal login credentials or data.",
+        },
+        {
+          front: "The 'Golden Hour'",
+          back: "The critical first 2 hours after a fraud occurs where banks have the highest chance to freeze or recover stolen funds.",
+        },
+        {
+          front: "SIM Swap Fraud",
+          back: "When an attacker convinces a mobile carrier to link your phone number to their SIM card to intercept your security OTPs.",
+        },
+        {
+          front: "Ponzi Scheme",
+          back: "An investment scam that pays 'returns' to old investors using money from new investors rather than actual profit.",
+        },
+        {
+          front: "QR Code Rule",
+          back: "Scanning a QR code and entering a PIN is ONLY for sending money. You never need a PIN to receive money.",
+        },
+        {
+          front: "Social Engineering",
+          back: "The psychological manipulation of people into divulging confidential information or breaking security protocols.",
+        },
+        {
+          front: "Advance Fee Fraud",
+          back: "Promising a large sum (lottery/inheritance) in exchange for a small upfront 'tax' or 'processing fee.'",
+        },
+        {
+          front: "Screen-Sharing Risks",
+          back: "Apps like AnyDesk/TeamViewer give scammers full control to see your passwords and control your device remotely.",
+        },
+        {
+          front: "Matrimonial Fraud",
+          back: "Using fake romantic profiles to build trust before fabricating an 'emergency' to request urgent money transfers.",
+        },
+        {
+          front: "Customer Care Scam",
+          back: "Fake helpline numbers on Google used to trick callers into sharing remote access or authorizing fake transactions.",
+        },
+        {
+          front: "OTP Protocol",
+          back: "One-Time Passwords are the final key to your account. NEVER share them with anyone, even bank staff.",
+        },
+        {
+          front: "ATM Skimming",
+          back: "Physical hardware placed on ATM card slots to illegally read and duplicate card magnetic stripe data.",
+        },
+        {
+          front: "Cashback Scam",
+          back: "Fake 'Scratch Cards' that lead to a UPI payment screen. Entering your PIN debits your account instead of rewarding it.",
+        },
+        {
+          front: "Crisis Exploitation",
+          back: "Using fear/urgency from global events (like pandemics) to lower a victim's guard and rush them into a scam.",
+        },
+        {
+          front: "Official Verification",
+          back: "Always hang up and call the number on the back of your official bank card. Never trust inbound caller ID.",
+        },
+        {
+          front: "Loan App Fraud",
+          back: "Unverified apps offering instant loans to harvest personal data or charge massive upfront 'processing fees.'",
+        },
+        {
+          front: "Caller ID Spoofing",
+          back: "Technology used by scammers to make a phone call look like it is coming from 'Bank Support' or 'Police.'",
+        },
+        {
+          front: "Shoulder Surfing",
+          back: "Physically watching a victim enter their PIN at an ATM or merchant terminal to steal their code.",
+        },
+        {
+          front: "Urgency, Fear, Greed",
+          back: "The three primary emotional triggers used in social engineering to bypass a victim's logical thinking.",
+        },
+        {
+          front: "Cyber Reporting (India)",
+          back: "Contact the national helpline at 1930 or file a formal complaint at cybercrime.gov.in immediately.",
+        },
+        {
+          front: "App Security",
+          back: "Only download from official stores. Check permissions to ensure apps aren't accessing more data than they need.",
+        },
+        {
+          front: "Fake Profile Signs",
+          back: "Urgent requests for money, low-quality photos, and an immediate push to move conversations to encrypted apps.",
+        },
+        {
+          front: "Initial Fraud Response",
+          back: "1. Block all accounts immediately. 2. Report to 1930. 3. Document all transaction IDs and chat logs.",
+        },
+      ];
+
+      let currentIndex = 0;
+
+      function updateCard() {
+        const cardInner = document.getElementById("cardInner");
+        cardInner.classList.remove("is-flipped");
+
+        setTimeout(() => {
+          document.getElementById("frontText").textContent =
+            flashcards[currentIndex].front;
+          document.getElementById("backText").textContent =
+            flashcards[currentIndex].back;
+
+          // Update Progress
+          const progPercent = Math.round(
+            ((currentIndex + 1) / flashcards.length) * 100
+          );
+          document.getElementById("progressBar").style.width =
+            progPercent + "%";
+          document.getElementById("percentage").textContent = progPercent + "%";
+          document.getElementById("progressText").textContent = `Concept ${
+            currentIndex + 1
+          } of ${flashcards.length}`;
+
+          document.getElementById("prevBtn").disabled = currentIndex === 0;
+          if (currentIndex === flashcards.length - 1) {
+            document.getElementById("nextBtn").innerHTML =
+              '<span>Finish Module</span> <i class="fa-solid fa-check"></i>';
+          } else {
+            document.getElementById("nextBtn").innerHTML =
+              '<span>Next Concept</span> <i class="fa-solid fa-arrow-right"></i>';
+          }
+        }, 150);
+      }
+
+      function flipCard() {
+        document.getElementById("cardInner").classList.toggle("is-flipped");
+      }
+
+      function nextCard(e) {
+        e.stopPropagation();
+        if (currentIndex < flashcards.length - 1) {
+          currentIndex++;
+          updateCard();
+        } else {
+          alert("Training Module Complete! Knowledge is your best defense.");
+        }
+      }
+
+      function prevCard(e) {
+        e.stopPropagation();
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateCard();
+        }
+      }
+
+      // Initialize
+      updateCard();
+    </script>
+  </body>
+</html>
